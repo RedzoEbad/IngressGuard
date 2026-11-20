@@ -1,0 +1,39 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          mkdir -p /usr/share/nginx/html/docs
+          echo "<h1>Documentation Website</h1>" > /usr/share/nginx/html/docs/index.html
+          exec nginx -g 'daemon off;'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service3
+  namespace: apps
+spec:
+  selector:
+    app: nginx
+  ports:
+  - port: 80
+    targetPort: 80
