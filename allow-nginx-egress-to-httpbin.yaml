@@ -1,0 +1,20 @@
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-nginx-egress-to-httpbin
+  namespace: apps
+spec:
+  podSelector:
+    matchLabels:
+      app: nginx
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: httpbin
+      ports:
+        - protocol: TCP
+          port: 80
